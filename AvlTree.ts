@@ -1,8 +1,10 @@
-interface AvlNode {
-	value: number;
-	left: AvlNode | undefined;
-	right: AvlNode | undefined;
-	height: number;
+class AvlNode {
+	public constructor(
+		public value: number,
+		public left: AvlNode | undefined = undefined,
+		public right: AvlNode | undefined = undefined,
+		public height: number = 1
+	) {}
 }
 
 class AvlTree {
@@ -10,46 +12,36 @@ class AvlTree {
 		public head: AvlNode | undefined
 	) {}
 
-	public insert(node: AvlNode) {
-		if (this.head === undefined) {
-			this.head = node;
+	public insert(value: number) {
+		this.head = this.insertNode(this.head, value);
+	}
+
+	private insertNode(node: AvlNode | undefined, value: number) {
+		if (node === undefined) {
+			return new AvlNode(value);
 		}
 
-		let currentNode = this.head;
-		while (true) {
-			// reject duplicates
-			if (currentNode.value === node.value) {
-				console.log('Duplicate value: ', node.value);
-				break;
-			}
-
-			// if value of inserted node is greater than current nodes value we insert in the right subtree
-			// we loop until we find a leaf node
-			// otherwise we can insert the node
-			if (node.value > currentNode.value) {
-				if (currentNode.right !== undefined) {
-					currentNode = currentNode.right;
-					continue;
-				}
-
-				currentNode.right = node;
-				this.balance();
-				break;
-			}
-			else {
-				if (currentNode.left !== undefined) {
-					currentNode = currentNode.left;
-					continue;
-				}
-
-				currentNode.left = node;
-				this.balance();
-				break;
-			}
+		if (node.value === value) {
+			console.log('Duplicate value: ', value);
+			return;
 		}
+
+		if (value < node.value) {
+			node.left = this.insertNode(node.left, value);
+		}
+		else {
+			node.right = this.insertNode(node.right, value);
+		}
+
+		node.height = 1 + Math.max(this.getHeight(node.left), this.getHeight(node.right));
+		this.balance();
+	}
+
+	private getHeight(node: AvlNode | undefined) {
+		return node === undefined ? 0 : node.height;
 	}
 
 	private balance() {
-
+		// TODO
 	}
 }
