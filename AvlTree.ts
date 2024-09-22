@@ -23,8 +23,7 @@ class AvlTree {
 		}
 
 		if (node.value === value) {
-			console.log('Duplicate value: ', value);
-			return node;
+			throw new Error(`${value} already exists.`);
 		}
 
 		if (value < node.value) {
@@ -44,7 +43,28 @@ class AvlTree {
 	}
 
 	private balance(node: AvlNode) {
-		// TODO
+		// left heavy
+		if (node.balance > 1) {
+			// left - right heavy case
+			if (node.left !== undefined && node.left.balance < 0) {
+				node.left = this.rotateLeft(node.left);
+			}
+
+			return this.rotateRight(node);
+		}
+
+		// right heavy
+		if (node.balance < -1) {
+			// right - left heavy case
+			if (node.right !== undefined && node.right.balance > 0) {
+				node.right = this.rotateRight(node.right);
+			}
+
+			return this.rotateLeft(node);
+		}
+
+		// If no rotation needed return the node itself to not to break the logic
+		return node;
 	}
 
 	private rotateRight(y: AvlNode) {
