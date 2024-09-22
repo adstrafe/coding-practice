@@ -38,6 +38,52 @@ class AvlTree {
 		return this.balance(node);
 	}
 
+	public delete(value: number) {
+		this.head = this.deleteNode(this.head, value);
+	}
+
+	private deleteNode(node: AvlNode | undefined, value: number) {
+		if (node === undefined) {
+			throw new Error('Node not found.');
+		}
+
+		if (value < node.value) {
+			node.left = this.deleteNode(node.left, value);
+		}
+		else if (value > node.value) {
+			node.right = this.deleteNode(node.right, value);
+		}
+		else {
+			// If we're deleting the node with 0 or 1 child.
+			if (node.left === undefined) {
+				return node.right;
+			}
+			else if (node.right === undefined) {
+				return node.left;
+			}
+
+			// If the node we're deleting has 2 children we need to get the smallest value in the right subtree
+			const successor = this.getSuccessor(node.right);
+			node.value = successor.value;
+			node.right = this.deleteNode(node.right, successor.value);
+
+			// Balance after deletion
+			node.height = 1 + Math.max(this.getHeight(node.left), this.getHeight(node.right));
+			node.balance = this.getHeight(node.left) - this.getHeight(node.right);
+
+			return this.balance(node);
+		}
+	}
+
+	private getSuccessor(node: AvlNode) {
+		let current = node;
+		while (current.left !== undefined) {
+			current = current.left;
+		}
+
+		return current;
+	}
+
 	private getHeight(node: AvlNode | undefined) {
 		return node === undefined ? 0 : node.height;
 	}
@@ -100,4 +146,5 @@ class AvlTree {
 		// return the new root of the subtree
 		return x;
 	}
+
 }
