@@ -109,7 +109,7 @@ class AvlTree {
 			return this.rotateLeft(node);
 		}
 
-		// If no rotation needed return the node itself to not to break the logic
+		// If no rotation needed -> return the node itself not to break the logic
 		return node;
 	}
 
